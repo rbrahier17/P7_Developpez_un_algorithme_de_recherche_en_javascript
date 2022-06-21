@@ -7,75 +7,49 @@ function normalizeString(string) {
 }
 
 function getTagValues(tags) {
-  let res = [];
-  for (let tag of tags) {
-    res.push(normalizeString(tag.innerText));
-  }
-  return res;
+  return [...tags].map((tag) => normalizeString(tag.innerText));
 }
 
 function getTagListToSearchIn(recipe) {
-  let res = [];
-  for (const ingredient of recipe.ingredients) {
-    res.push(normalizeString(ingredient.ingredient));
-  }
-  res.push(normalizeString(recipe.appliance));
-  for (const ustensil of recipe.ustensils) {
-    res.push(normalizeString(ustensil));
-  }
-  return res;
+  return recipe.ingredients
+    .map((ingredient) => ingredient.ingredient)
+    .concat(recipe.appliance)
+    .concat(recipe.ustensils)
+    .map((el) => normalizeString(el));
 }
 
 function filterRecipesByTags(recipes, tags) {
-  let res = [];
-  const tagValues = getTagValues(tags);
-  for (const recipe of recipes) {
-    let pushRecipe = true;
-    const tagListToSearchIn = getTagListToSearchIn(recipe);
-    for (const val of tagValues) {
-      if (tagListToSearchIn.indexOf(val) === -1) pushRecipe = false;
-    }
-    if (pushRecipe) res.push(recipe);
-  }
-  return res;
+  return recipes.filter((recipe) => getTagValues(tags).every((val) => getTagListToSearchIn(recipe).indexOf(val) > -1));
 }
 
 function mainInputSearch(recipes, inputValue) {
-  let res = [];
   const keyword = normalizeString(inputValue);
-  for (const recipe of recipes) {
-    let goToNextIteration = false;
-    if (normalizeString(recipe.name).includes(keyword)) {
-      res.push(recipe);
-      goToNextIteration = true;
-    } else if (!goToNextIteration && normalizeString(recipe.description).includes(keyword)) {
-      res.push(recipe);
-      goToNextIteration = true;
-    } else if (!goToNextIteration) {
-      for (const ingredient of recipe.ingredients) {
-        if (normalizeString(ingredient.ingredient).includes(keyword)) {
-          res.push(recipe);
-        }
-      }
-    }
-  }
-  return res
+  return recipes.filter((recipe) => 
+    normalizeString(recipe.name).includes(keyword)
+      ? true
+      : normalizeString(recipe.description).includes(keyword)
+      ? true
+      : recipe.ingredients.map((ingredient) => normalizeString(ingredient.ingredient)).includes(keyword)
+      ? true
+      : false
+  );
 }
 
 function getFilteredTags(recipes) {
-  const res = {}
+  const res = {};
   res.ingredients = tagsFactory(recipes, "ingredients");
   res.appliances = tagsFactory(recipes, "appliances");
   res.ustensils = tagsFactory(recipes, "ustensils");
-  return res
+  return res;
 }
 
 function getSearchResult(recipes, inputValue, pinnedTags) {
+  console.log(pinnedTags)
   const res = {};
   let recipesListToSearchIn = recipes;
   if (pinnedTags.length > 0) recipesListToSearchIn = filterRecipesByTags(recipes, pinnedTags);
   if (inputValue.length < 3) res.filteredRecipes = recipesListToSearchIn;
-  else if (inputValue.length >= 3) res.filteredRecipes = mainInputSearch(recipesListToSearchIn, inputValue)
-  res.filteredTags = getFilteredTags(res.filteredRecipes)
+  else if (inputValue.length >= 3) res.filteredRecipes = mainInputSearch(recipesListToSearchIn, inputValue);
+  res.filteredTags = getFilteredTags(res.filteredRecipes);
   return res;
 }
