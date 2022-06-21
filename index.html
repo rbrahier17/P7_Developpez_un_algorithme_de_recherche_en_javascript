@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://kit.fontawesome.com/a7f7be9ef6.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- CDN FONT AWESOME -->
+  <script src="https://kit.fontawesome.com/a7f7be9ef6.js" crossorigin="anonymous"></script>
+  <!-- CDN GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&family=Lato:wght@400;700&family=Roboto&display=swap" rel="stylesheet"> 
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  <!-- API -->
+  <script defer src="scripts/api/recipes.js"></script>
+  <!-- FACTORIES -->
+  <script defer src="scripts/factories/tags.js"></script>
+  <script defer src="scripts/factories/recipeCard.js"></script>
+  <!-- MAIN SEARCH -->
+  <script src="scripts/mainSearch.js" defer></script> 
+  <!-- TAG SEARCH -->
+  <script src="scripts/tagSearch.js" defer></script> 
+  <!-- INDEX JS -->
+  <script src="scripts/index.js" defer></script> 
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="container">
+
+    <!----------------------HEADER--------------------->
+    <header class="col text-center">
+      <img src="assets/logo.png" alt="Logo du site" />
+      <h1>Les petits plats</h1>
+    </header>
+
+    <!----------------------MAIN SEARCH BAR--------------------->
+    <div class="main-search-container">
+      <input type="text" placeholder="Rechercher une recette">
+      <i class="fa fa-search"></i>
+    </div>
+
+    <!----------------------TAG SEARCH MENUS--------------------->
+    <div class="pinned-tags-container"></div>
+
+    <div class="tag-search-all-menus">
+
+      <!-----Ingredients----->
+      <div class="tag-search-menu ingredients">
+        <div class="input-container">
+          <input placeholder="Ingrédients" id="ingredients"/>
+          <i class="fa fa-solid fa-chevron-down"></i>
+        </div>
+        <ul class="dropdown-list">
+        </ul>
+      </div>
+
+      <!-----Appliances----->
+      <div class="tag-search-menu appliances">
+        <div class="input-container">
+          <input placeholder="Appareils" id="appliances"/>
+          <i class="fa fa-solid fa-chevron-down"></i>
+        </div>
+        <ul class="dropdown-list">
+        </ul>
+      </div>
+
+      <!-----Ustensils----->
+      <div class="tag-search-menu ustensils">
+        <div class="input-container">
+          <input placeholder="Ustensiles" id="ustensils"/>
+          <i class="fa fa-solid fa-chevron-down"></i>
+        </div>
+        <ul class="dropdown-list">
+        </ul>
+      </div>
+    </div>
+
+    <!-- RECIPES CARDS -->
+    <section class="recipes-cards-container">
+
+    </section>
+    
+  </div>
+
+
+
+  </div>
+</body>
+</html>
