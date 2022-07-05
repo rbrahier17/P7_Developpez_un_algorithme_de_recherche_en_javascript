@@ -20,7 +20,17 @@ function hide(DOMelement) {
   DOMelement.style.display = "none";
 }
 
+function displayNoResults() {
+  show(document.querySelector(".no-results"))
+}
+
+function hideNoResults() {
+  hide(document.querySelector(".no-results"))
+}
+
 function updateDOMRecipeDisplay(filteredRecipes) {
+  if (filteredRecipes.length === 0) displayNoResults() 
+  else hideNoResults()
   const DOMrecipes = document.querySelectorAll(".recipe-card");
   const filteredRecipesIds = getRecipesIds(filteredRecipes);
   for (const DOMrecipe of DOMrecipes) {

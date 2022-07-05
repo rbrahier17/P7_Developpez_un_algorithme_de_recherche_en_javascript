@@ -328,6 +328,23 @@ header h1 {
   max-height: 6.4rem;
 } 
 
+.no-results {
+  display: none;
+  font-family: var(--mainFont);
+  font-size: 1.7rem;
+  width: 100%;
+  text-align: center;
+  background-color: var(--red);
+  border-radius: 5px;
+}
+
+.no-results p {
+  width: 80%;
+  margin: 5vh auto;
+  color: white;
+  padding: 12px;
+}
+
 @media only screen and (max-width: 1360px) {
   .recipe-card {
     width: 350px;

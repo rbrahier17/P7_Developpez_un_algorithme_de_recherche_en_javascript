@@ -1,81 +1,79 @@
 function normalizeString(string) {
+  const diacriticRegex = new RegExp(/\p{Diacritic}/, "gu");
+  const spaceRegex = new RegExp(/\s/, "g");
   return string
     .normalize("NFD") // returns the string in normalized Unicode form with decomposition of diacritics (accents, umlauts, cedillas, etc.)
-    .replace(/\p{Diacritic}/gu, "") // remove diacritics
+    .replace(diacriticRegex, "") // remove diacritics
     .toLowerCase()
-    .replace(/\s/g, ""); // remove all spaces
+    .replace(spaceRegex, ""); // remove all spaces
 }
 
 function getTagValues(tags) {
   let res = [];
-  for (let tag of tags) {
-    res.push(normalizeString(tag.innerText));
+  for (let i = 0; i < tags.length; i++) {
+    res.push(normalizeString(tags[i].innerText));
   }
   return res;
 }
 
 function getTagListToSearchIn(recipe) {
   let res = [];
-  for (const ingredient of recipe.ingredients) {
-    res.push(normalizeString(ingredient.ingredient));
-  }
+  for (let i = 0; i < recipe.ingredients.length; i++) res.push(normalizeString(recipe.ingredients[i].ingredient));
   res.push(normalizeString(recipe.appliance));
-  for (const ustensil of recipe.ustensils) {
-    res.push(normalizeString(ustensil));
-  }
+  for (let j = 0; j < recipe.ustensils.length; j++) res.push(normalizeString(recipe.ustensils[j]));
   return res;
 }
 
 function filterRecipesByTags(recipes, tags) {
   let res = [];
   const tagValues = getTagValues(tags);
-  for (const recipe of recipes) {
+  for (let i = 0; i < recipes.length; i++) {
     let pushRecipe = true;
-    const tagListToSearchIn = getTagListToSearchIn(recipe);
-    for (const val of tagValues) {
-      if (tagListToSearchIn.indexOf(val) === -1) pushRecipe = false;
+    const tagListToSearchIn = getTagListToSearchIn(recipes[i]);
+    for (let j = 0; j < tagValues.length; j++) {
+      if (tagListToSearchIn.indexOf(tagValues[j]) === -1) pushRecipe = false;
     }
-    if (pushRecipe) res.push(recipe);
+    if (pushRecipe) res.push(recipes[i]);
   }
   return res;
 }
 
 function mainInputSearch(recipes, inputValue) {
-  let res = [];
+  const res = [];
   const keyword = normalizeString(inputValue);
-  for (const recipe of recipes) {
+  for (let i = 0; i < recipes.length; i++) {
     let goToNextIteration = false;
-    if (normalizeString(recipe.name).includes(keyword)) {
-      res.push(recipe);
+    if (normalizeString(recipes[i].name).includes(keyword)) {
+      res.push(recipes[i]);
       goToNextIteration = true;
-    } else if (!goToNextIteration && normalizeString(recipe.description).includes(keyword)) {
-      res.push(recipe);
+    } else if (!goToNextIteration && normalizeString(recipes[i].description).includes(keyword)) {
+      res.push(recipes[i]);
       goToNextIteration = true;
     } else if (!goToNextIteration) {
-      for (const ingredient of recipe.ingredients) {
-        if (normalizeString(ingredient.ingredient).includes(keyword)) {
-          res.push(recipe);
-        }
+      const ingredientsArray = [];
+      for (let j = 0; j < recipes[i].ingredients.length; j++) {
+        if (normalizeString(recipes[i].ingredients[j].ingredient).includes(keyword)) res.push(recipes[i]);
       }
     }
   }
-  return res
+  return res;
 }
 
 function getFilteredTags(recipes) {
-  const res = {}
+  const res = {};
   res.ingredients = tagsFactory(recipes, "ingredients");
   res.appliances = tagsFactory(recipes, "appliances");
   res.ustensils = tagsFactory(recipes, "ustensils");
-  return res
+  return res;
 }
 
 function getSearchResult(recipes, inputValue, pinnedTags) {
   const res = {};
   let recipesListToSearchIn = recipes;
   if (pinnedTags.length > 0) recipesListToSearchIn = filterRecipesByTags(recipes, pinnedTags);
-  if (inputValue.length < 3) res.filteredRecipes = recipesListToSearchIn;
-  else if (inputValue.length >= 3) res.filteredRecipes = mainInputSearch(recipesListToSearchIn, inputValue)
-  res.filteredTags = getFilteredTags(res.filteredRecipes)
+  if (inputValue.length < 3) res.filteredRecipes = recipesListToSearchIn; 
+  else if (inputValue.length >= 3) res.filteredRecipes = mainInputSearch(recipesListToSearchIn, inputValue); 
+  res.filteredTags = getFilteredTags(res.filteredRecipes);
   return res;
 }
+
