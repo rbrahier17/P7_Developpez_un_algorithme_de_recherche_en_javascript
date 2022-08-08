@@ -14,13 +14,15 @@
   <link rel="stylesheet" href="style.css">
   <!-- API -->
   <script defer src="scripts/api/recipes.js"></script>
+  <!-- UTILS -->
+  <script defer src="scripts/utils/normalizeString.js"></script>
   <!-- FACTORIES -->
   <script defer src="scripts/factories/tags.js"></script>
   <script defer src="scripts/factories/recipeCard.js"></script>
   <!-- MAIN SEARCH -->
-  <script src="scripts/mainSearch.js" defer></script> 
+  <script src="scripts/search/mainSearch.js" defer></script> 
   <!-- TAG SEARCH -->
-  <script src="scripts/tagSearch.js" defer></script> 
+  <script src="scripts/search/tagSearch.js" defer></script> 
   <!-- INDEX JS -->
   <script src="scripts/index.js" defer></script> 
   <title>Document</title>
@@ -52,8 +54,7 @@
           <input placeholder="Ingrédients" id="ingredients"/>
           <i class="fa fa-solid fa-chevron-down"></i>
         </div>
-        <ul class="dropdown-list">
-        </ul>
+        <ul class="dropdown-list"></ul>
       </div>
 
       <!-----Appliances----->
@@ -62,8 +63,7 @@
           <input placeholder="Appareils" id="appliances"/>
           <i class="fa fa-solid fa-chevron-down"></i>
         </div>
-        <ul class="dropdown-list">
-        </ul>
+        <ul class="dropdown-list"></ul>
       </div>
 
       <!-----Ustensils----->
@@ -72,8 +72,7 @@
           <input placeholder="Ustensiles" id="ustensils"/>
           <i class="fa fa-solid fa-chevron-down"></i>
         </div>
-        <ul class="dropdown-list">
-        </ul>
+        <ul class="dropdown-list"></ul>
       </div>
     </div>
 
