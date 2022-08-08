@@ -1,54 +1,39 @@
 /* eslint-disable no-undef */
 /**
- *
- * OPTION 1: Classic Loops
+ * OPTION 2: Functionnal programming
  * This file manages the filtering of recipes based on user input and tags
  */
 
 /**
  *
  * @param {NodeList} tags
- * @returns {Array.<string>} res
+ * @returns {Array.<string>} array of tag names
  */
 function getTagValues(tags) {
-  let res = [];
-  for (let i = 0; i < tags.length; i++) {
-    res.push(normalizeString(tags[i].innerText));
-  }
-  return res;
+  return [...tags].map((tag) => normalizeString(tag.innerText));
 }
 
 /**
  *
  * @param {Object} recipe
- * @returns {Array.<string>} res : single array with ingredient, appliance and ustensil tag names
+ * @returns {Array.<string>} single array with ingredient, appliance and ustensil tag names
  */
 function getTagListToSearchIn(recipe) {
-  let res = [];
-  for (let i = 0; i < recipe.ingredients.length; i++) res.push(normalizeString(recipe.ingredients[i].ingredient));
-  res.push(normalizeString(recipe.appliance));
-  for (let j = 0; j < recipe.ustensils.length; j++) res.push(normalizeString(recipe.ustensils[j]));
-  return res;
+  return recipe.ingredients
+    .map((ingredient) => ingredient.ingredient)
+    .concat(recipe.appliance)
+    .concat(recipe.ustensils)
+    .map((el) => normalizeString(el));
 }
 
 /**
  *
  * @param {Object} recipes
  * @param {NodeList} tags
- * @returns {Array.<Object>} res
+ * @returns {Array.<Object>}
  */
 function filterRecipesByTags(recipes, tags) {
-  let res = [];
-  const tagValues = getTagValues(tags);
-  for (let i = 0; i < recipes.length; i++) {
-    let pushRecipe = true;
-    const tagListToSearchIn = getTagListToSearchIn(recipes[i]);
-    for (let j = 0; j < tagValues.length; j++) {
-      if (tagListToSearchIn.indexOf(tagValues[j]) === -1) pushRecipe = false;
-    }
-    if (pushRecipe) res.push(recipes[i]);
-  }
-  return res;
+  return recipes.filter((recipe) => getTagValues(tags).every((val) => getTagListToSearchIn(recipe).indexOf(val) > -1));
 }
 
 /**
@@ -58,10 +43,8 @@ function filterRecipesByTags(recipes, tags) {
  * @returns {Boolean}
  */
 function isIngredientMatching(ingredients, keyword) {
-  for (let i = 0; i < ingredients.length; i++) {
-    if (normalizeString(ingredients[i].ingredient).includes(keyword)) return true;
-  }
-  return false;
+  let ingredientsArr = ingredients.map((ingredient) => ingredient.ingredient);
+  return ingredientsArr.some((ingredient) => normalizeString(ingredient).includes(keyword));
 }
 
 /**
@@ -71,31 +54,30 @@ function isIngredientMatching(ingredients, keyword) {
  * @returns {Boolean}
  */
 function isRecipeMatching(recipe, keyword) {
-  if (recipe.name.includes(keyword)) return true;
-  if (recipe.description.includes(keyword)) return true;
-  if (isIngredientMatching(recipe.ingredients, keyword)) return true;
-  return false;
+  return normalizeString(recipe.name).includes(keyword)
+    ? true
+    : normalizeString(recipe.description).includes(keyword)
+      ? true
+      : isIngredientMatching(recipe.ingredients, keyword)
+        ? true
+        : false;
 }
 
 /**
  *
  * @param {Object} recipes
  * @param {String} inputValue
- * @returns {Array.<Object>} res : filtered recipes
+ * @returns {Array.<Object>} : filtered recipes
  */
 function mainInputSearch(recipes, inputValue) {
-  const res = [];
   const keyword = normalizeString(inputValue);
-  for (let i = 0; i < recipes.length; i++) {
-    if (isRecipeMatching(recipes[i], keyword)) res.push(recipes[i]);
-  }
-  return res;
+  return recipes.filter((recipe) => isRecipeMatching(recipe, keyword));
 }
 
 /**
  *
  * @param {Object} recipes
- * @returns {Object} res : filtered tags
+ * @returns {Object} filtered tags
  */
 function getFilteredTags(recipes) {
   const res = {};
@@ -110,7 +92,7 @@ function getFilteredTags(recipes) {
  * @param {Object} recipes
  * @param {String} inputValue
  * @param {NodeList} pinnedTags
- * @returns {Object} res : filtered recipes and tags
+ * @returns {Object} filtered recipes and tags
  */
 // eslint-disable-next-line no-unused-vars
 function getSearchResult(recipes, inputValue, pinnedTags) {
